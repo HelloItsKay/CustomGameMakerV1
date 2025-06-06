@@ -8,6 +8,10 @@ import random
 
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
+print(f"Loaded DISCORD_TOKEN: {TOKEN[:10]}...")  # За проверка дали токенът се зарежда
+if not TOKEN:
+    print("ERROR: DISCORD_TOKEN is None или празен!")
+    exit(1)
 
 if TOKEN is None:
     print("ERROR: Discord token not found. Make sure .env file exists and contains DISCORD_TOKEN.")
