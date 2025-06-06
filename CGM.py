@@ -3,9 +3,15 @@ from discord.ext import commands
 import logging
 from dotenv import load_dotenv
 import os
+import asyncio
+import random
 
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
+
+if TOKEN is None:
+    print("ERROR: Discord token not found. Make sure .env file exists and contains DISCORD_TOKEN.")
+    exit(1)
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -21,13 +27,20 @@ async def on_ready():
 
 @bot.command()
 async def cgstart(ctx):
-    # Изпраща embed
-    embed = discord.Embed(title="Custom Game Queue", description="Реагирай с ✅ за участие!\nПървите 10 ще играят.", color=0x00ff00)
+    embed = discord.Embed(
+        title="Custom Game Queue",
+        description="Реагирай с ✅ за участие!\nПървите 10 ще играят.",
+        color=0x00ff00
+    )
     message = await ctx.send(embed=embed)
     await message.add_reaction("✅")
 
     def check(reaction, user):
-        return str(reaction.emoji) == "✅" and reaction.message.id == message.id and not user.bot
+        return (
+            str(reaction.emoji) == "✅" and
+            reaction.message.id == message.id and
+            not user.bot
+        )
 
     participants = []
 
@@ -41,12 +54,10 @@ async def cgstart(ctx):
         await ctx.send("Времето изтече, не се събраха 10 участника.")
         return
 
-    # Разделяме на отбори
     random.shuffle(participants)
     team1 = participants[:5]
     team2 = participants[5:]
 
-    # Имена на гласовите канали
     vc1 = discord.utils.get(ctx.guild.voice_channels, name="Канал 1")
     vc2 = discord.utils.get(ctx.guild.voice_channels, name="Канал 2")
 
@@ -54,7 +65,6 @@ async def cgstart(ctx):
         await ctx.send("Не можах да намеря гласовите канали 'Канал 1' и 'Канал 2'.")
         return
 
-    # Преместване на участниците
     for member in team1:
         if member.voice:
             await member.move_to(vc1)
@@ -64,4 +74,5 @@ async def cgstart(ctx):
             await member.move_to(vc2)
 
     await ctx.send("Играчите бяха разделени на отбори и преместени!")
+
 bot.run(TOKEN)
