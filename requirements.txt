@@ -1,1 +1,1 @@
-pip install -U discord.py
+discord.py==2.x.x  ← (може да е и 2.3.2 или друга последна версия)
