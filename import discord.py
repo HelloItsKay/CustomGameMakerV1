@@ -4,7 +4,9 @@ import logging
 from dotenv import load_dotenv
 import os
 
-DISCORD_TOKEN=MTM4MDM1MTE5Njc2MTQyMzk4Mw.Gfbmli.TrcaXIJnnrNvhmG4YaYcj7oUFnO3zvMXbFi8KA
+load_dotenv()
+TOKEN = os.getenv("DISCORD_TOKEN")
+
 intents = discord.Intents.default()
 intents.message_content = True
 intents.members = True
@@ -62,4 +64,4 @@ async def cgstart(ctx):
             await member.move_to(vc2)
 
     await ctx.send("Играчите бяха разделени на отбори и преместени!")
-bot.run(DISCORD_TOKEN)
+bot.run(TOKEN)
